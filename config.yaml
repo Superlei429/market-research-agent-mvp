@@ -9,19 +9,68 @@ model:
   base_url: https://api.deepseek.com/v1
   api_key: ${DEEPSEEK_API_KEY}   # 从环境变量 DEEPSEEK_API_KEY 读取
   temperature: 0.2
-  max_tokens: 4096
+  max_tokens: 8192               # 输出含 <analysis> + JSON + <self_check>，需要更大空间
   response_format:
-    type: json_object            # 强制 JSON 结构化输出
+    type: json_object
+    # enabled: false 时允许模型输出 <analysis>/<self_check> 标签（prompt.md 要求）；
+    # 置为 true 则强制纯 JSON 输出（此时思维链标签会被模型并入 JSON 字段）。
+    enabled: false
 
 # ---- 工具配置 ----
 tools:
   web_search:
     provider: tavily
     api_key: ${TAVILY_API_KEY}   # 从环境变量 TAVILY_API_KEY 读取
-    max_results: 5
+    max_results: 5               # 作为 search.max_results_per_query 的兜底默认值
+
+# ---- 搜索策略（分维度多轮）----
+search:
+  # 搜索维度列表（执行顺序即维度顺序）
+  dimensions:
+    - market_size            # 市场规模与增速
+    - consumer_trends        # 消费者需求趋势
+    - ingredient_trends      # 热门成分/原料趋势
+    - competitor_analysis    # 主要竞品分析
+    - pain_points            # 消费者痛点与差评
+    - regulatory             # 法规与标准动态
+    - functional_needs       # 功能性需求
+  # 每个维度执行的搜索次数（不同关键词组合），7 维度 × 2 次 = 14+ 次
+  queries_per_dimension: 2
+  # 每次搜索返回的最大结果条数
+  max_results_per_query: 5
+  # 是否对已见过的 URL 去重
+  dedup: true
+  # 目标分析年份（渲染到 {year} 占位符）
+  year: 2026
+  # 各维度关键词模板（支持 {year} 占位符）；取每个维度前 queries_per_dimension 条
+  dimension_queries:
+    market_size:
+      - "中国猫粮市场规模 {year}"
+      - "中国宠物食品市场 规模 增速 {year}"
+    consumer_trends:
+      - "猫粮消费者需求 趋势 {year}"
+      - "养猫 消费趋势 主粮 偏好 {year}"
+    ingredient_trends:
+      - "猫粮 热门成分 冻干 鲜肉 {year}"
+      - "宠物食品 成分趋势 高蛋白 无谷 {year}"
+    competitor_analysis:
+      - "中高端猫粮 品牌 测评 排行"
+      - "国产猫粮 品牌 对比 高端 价格"
+    pain_points:
+      - "猫粮 差评 问题 投诉"
+      - "猫粮 黑榜 翻车 召回 品质"
+    regulatory:
+      - "宠物食品 国标 新规 {year}"
+      - "宠物饲料 管理办法 标准 更新 {year}"
+    functional_needs:
+      - "猫粮 功能 泌尿 肠胃 美毛 需求"
+      - "功能性猫粮 需求 增长 品类"
+
+# ---- 竞品锚点库（模型对比参考，需定期人工更新）----
+competitor_anchors: data/competitor_anchors.yaml
 
 # ---- 执行配置 ----
 execution:
-  timeout_seconds: 90            # 单次模型请求超时（秒）
+  timeout_seconds: 120           # 单次模型请求超时（秒）；检索档案件大，适当放宽
   max_retries: 3                 # JSON 解析失败最大重试次数
   json_validation: strict        # 严格校验 JSON 输出

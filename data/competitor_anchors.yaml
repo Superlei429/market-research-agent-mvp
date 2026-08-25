@@ -1,0 +1,49 @@
+# ============================================================
+# 竞品锚点库 - 供模型对比参考
+# 数据来源：公开测评、电商页面（需定期人工更新）
+# 用法：作为市场调研 Agent 的静态基准，与实时检索结果交叉印证。
+# 注意：价格/配方会随促销、改版波动，新竞品出现时请追加条目。
+# ============================================================
+
+competitors:
+  - brand: 网易严选
+    product: 全价猫粮
+    price_per_kg: 25
+    protein_pct: 36
+    positioning: 性价比中高端
+    key_ingredients: [鸡肉, 鱼粉]
+
+  - brand: 高爷家
+    product: 全价猫粮
+    price_per_kg: 40
+    protein_pct: 40
+    positioning: 国产高端
+    key_ingredients: [鲜鸡肉, 鸡肝]
+
+  - brand: 渴望(Orijen)
+    product: 六种鱼
+    price_per_kg: 80
+    protein_pct: 42
+    positioning: 进口超高端
+    key_ingredients: [六种鱼]
+
+  - brand: 皇家(Royal Canin)
+    product: 室内成猫
+    price_per_kg: 55
+    protein_pct: 27
+    positioning: 进口中高端/处方粮
+    key_ingredients: [禽肉粉, 玉米]
+
+  - brand: 诚实一口
+    product: P40
+    price_per_kg: 35
+    protein_pct: 40
+    positioning: 国产中高端
+    key_ingredients: [鸡肉, 鱼肉]
+
+  - brand: 蓝氏
+    product: 猎鸟乳鸽
+    price_per_kg: 50
+    protein_pct: 42
+    positioning: 国产高端/差异化原料
+    key_ingredients: [乳鸽, 鸡肉]
