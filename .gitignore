@@ -1,0 +1,7 @@
+# 忽略敏感信息与运行产物
+.env
+logs/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store

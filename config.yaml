@@ -1,0 +1,27 @@
+# ============================================================
+# 市场调研 Agent 配置文件
+# 模型配置仅使用 DeepSeek
+# ============================================================
+
+# ---- 模型配置 ----
+model:
+  name: deepseek-chat            # DeepSeek API 实际模型名（注意：不是 v4-flash）
+  base_url: https://api.deepseek.com/v1
+  api_key: ${DEEPSEEK_API_KEY}   # 从环境变量 DEEPSEEK_API_KEY 读取
+  temperature: 0.2
+  max_tokens: 4096
+  response_format:
+    type: json_object            # 强制 JSON 结构化输出
+
+# ---- 工具配置 ----
+tools:
+  web_search:
+    provider: tavily
+    api_key: ${TAVILY_API_KEY}   # 从环境变量 TAVILY_API_KEY 读取
+    max_results: 5
+
+# ---- 执行配置 ----
+execution:
+  timeout_seconds: 90            # 单次模型请求超时（秒）
+  max_retries: 3                 # JSON 解析失败最大重试次数
+  json_validation: strict        # 严格校验 JSON 输出
